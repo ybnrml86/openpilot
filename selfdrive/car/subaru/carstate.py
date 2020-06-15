@@ -136,6 +136,10 @@ class CarState(CarStateBase):
         ("BodyInfo", 10),
         ("CruiseControl", 20),
      ]
+    else:
+      signals += [
+        ("LKA_Lockout", "Steering_Torque", 0),
+      ]
 
     if CP.carFingerprint == CAR.FORESTER_PREGLOBAL:
       checks += [
