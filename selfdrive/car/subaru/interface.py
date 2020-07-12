@@ -34,7 +34,6 @@ class CarInterface(CarInterfaceBase):
     ret.steerLimitTimer = 0.4
 
     if candidate == CAR.ASCENT:
-      ret.safetyModel = car.CarParams.SafetyModel.subaru
       ret.mass = 2031. + STD_CARGO_KG
       ret.wheelbase = 2.89
       ret.centerToFront = ret.wheelbase * 0.5
@@ -45,7 +44,6 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.0025, 0.1], [0.00025, 0.01]]
 
     if candidate == CAR.IMPREZA:
-      ret.safetyModel = car.CarParams.SafetyModel.subaru
       ret.mass = 1568. + STD_CARGO_KG
       ret.wheelbase = 2.67
       ret.centerToFront = ret.wheelbase * 0.5
