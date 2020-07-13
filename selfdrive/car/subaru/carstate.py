@@ -135,7 +135,7 @@ class CarState(CarStateBase):
         ("Dashlights", 10),
         ("BodyInfo", 10),
         ("CruiseControl", 20),
-     ]
+      ]
 
     if CP.carFingerprint in [CAR.FORESTER_2017, CAR.OUTBACK_2015, CAR.OUTBACK_2019, CAR.LEGACY_2015]:
       signals += [
