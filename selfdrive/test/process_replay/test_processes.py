@@ -2,12 +2,22 @@
 import argparse
 import os
 import sys
-from typing import Any
+from typing import Any, cast
 
 from selfdrive.car.car_helpers import interface_names
 from selfdrive.test.process_replay.compare_logs import compare_logs
 from selfdrive.test.process_replay.process_replay import CONFIGS, replay_process
 from tools.lib.logreader import LogReader
+from selfdrive.car.chrysler.values import CAR as CHRYSLER
+from selfdrive.car.ford.values import CAR as FORD
+from selfdrive.car.gm.values import CAR as GM
+from selfdrive.car.honda.values import CAR as HONDA
+from selfdrive.car.hyundai.values import CAR as HYUNDAI
+from selfdrive.car.nissan.values import CAR as NISSAN
+from selfdrive.car.mazda.values import CAR as MAZDA
+from selfdrive.car.subaru.values import CAR as SUBARU
+from selfdrive.car.toyota.values import CAR as TOYOTA
+from selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 
 INJECT_MODEL = 0
 
@@ -24,8 +34,11 @@ segments = [
   ("VOLKSWAGEN", "ef895f46af5fd73f|2021-05-22--14-06-35--6"),  # VW.AUDI_A3_MK3
 
   # Enable when port is tested and dascamOnly is no longer set
-  #("MAZDA", "32a319f057902bb3|2020-04-27--15-18-58--2"),      # MAZDA.CX5
-]
+  #"32a319f057902bb3|2020-04-27--15-18-58--2": {
+  #  'car_brand': "MAZDA",
+  #  'carFingerprint': MAZDA.CX5,
+  #},
+}
 
 # dashcamOnly makes don't need to be tested until a full port is done
 excluded_interfaces = ["mock", "ford", "mazda"]
@@ -138,15 +151,18 @@ if __name__ == "__main__":
 
   # check to make sure all car brands are tested
   if FULL_TEST:
-    tested_cars = set(c.lower() for c, _ in segments)
+    tested_cars = set(keys["car_brand"].lower() for segment, keys in segments.items())
     untested = (set(interface_names) - set(excluded_interfaces)) - tested_cars
     assert len(untested) == 0, "Cars missing routes: %s" % (str(untested))
 
   results: Any = {}
-  for car_brand, segment in segments:
-    if (cars_whitelisted and car_brand.upper() not in args.whitelist_cars) or \
-       (not cars_whitelisted and car_brand.upper() in args.blacklist_cars):
+  for segment, keys in segments.items():
+    if (cars_whitelisted and keys["car_brand"].upper() not in args.whitelist_cars) or \
+       (not cars_whitelisted and keys["car_brand"].upper() in args.blacklist_cars):
       continue
+
+    if keys.get('fingerprintSource', None) == 'fixed':
+      os.environ['FINGERPRINT'] = cast(str, keys["carFingerprint"])
 
     print("***** testing route segment %s *****\n" % segment)
 
