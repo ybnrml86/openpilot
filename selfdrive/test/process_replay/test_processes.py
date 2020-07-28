@@ -10,10 +10,11 @@ from selfdrive.test.process_replay.process_replay import CONFIGS, replay_process
 from tools.lib.logreader import LogReader
 from selfdrive.car.chrysler.values import CAR as CHRYSLER
 from selfdrive.car.gm.values import CAR as GM
+#from selfdrive.car.ford.values import CAR as FORD
 from selfdrive.car.honda.values import CAR as HONDA
 from selfdrive.car.hyundai.values import CAR as HYUNDAI
 from selfdrive.car.nissan.values import CAR as NISSAN
-from selfdrive.car.mazda.values import CAR as MAZDA
+#from selfdrive.car.mazda.values import CAR as MAZDA
 from selfdrive.car.subaru.values import CAR as SUBARU
 from selfdrive.car.toyota.values import CAR as TOYOTA
 from selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
