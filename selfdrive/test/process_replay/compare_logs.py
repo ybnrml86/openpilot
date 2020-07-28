@@ -46,6 +46,8 @@ def remove_ignored_fields(msg, ignore):
         val = False
       elif isinstance(v, numbers.Number):
         val = 0
+      elif isinstance(v, capnp.lib.capnp._DynamicEnum):
+        val = 0
       else:
         raise NotImplementedError
       setattr(attr, keys[-1], val)
