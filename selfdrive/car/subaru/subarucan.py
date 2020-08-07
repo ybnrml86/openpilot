@@ -1,12 +1,10 @@
 import copy
 from cereal import car
-from selfdrive.car.subaru.values import PREGLOBAL_CAR
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
-def subaru_preglobal_checksum(packer, values, addr):
-  dat = packer.make_can_msg(addr, 0, values)[2]
-  return (sum(dat[:7])) % 256
+def create_steering_control(packer, apply_steer, frame, steer_step):
+  idx = (frame / steer_step) % 16
 
   idx = (frame / steer_step) % 16
 
