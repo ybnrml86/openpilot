@@ -217,6 +217,7 @@ FW_VERSIONS = {
       b'\x00\x00d\xdc\x1f@ \x0e',
       b'\x00\x00e\x1c\x1f@ \x14',
       b'\x00\x00d)\x1f@ \a',
+      b'\x00\x00d\xb5\x1f@ \x0e',
     ],
     (Ecu.engine, 0x7e0, None): [
       b'\xaa\x61\x66\x73\x07',
@@ -233,6 +234,7 @@ FW_VERSIONS = {
       b'\xe5\xf5\x04\x00\x00',
       b'\xe3\xf5G\x00\x00',
       b'\xe3\xf5\a\x00\x00',
+      b'\xe3\xf5C\x00\x00',
     ],
   },
   CAR.FORESTER_PREGLOBAL: {
