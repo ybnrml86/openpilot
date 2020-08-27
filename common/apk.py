@@ -4,12 +4,13 @@ import glob
 import hashlib
 import shutil
 from common.basedir import BASEDIR
+from common.shell import run_cmd
 from selfdrive.swaglog import cloudlog
 
 android_packages = ("ai.comma.plus.offroad",)
 
 def get_installed_apks():
-  dat = subprocess.check_output(["pm", "list", "packages", "-f"], encoding='utf8').strip().split("\n")
+  dat = run_cmd(["pm", "list", "packages", "-f"]).split("\n")
   ret = {}
   for x in dat:
     if x.startswith("package:"):

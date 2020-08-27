@@ -2,18 +2,8 @@
 import os
 import subprocess
 from common.basedir import BASEDIR
+from common.shell import run_cmd, run_cmd_default
 from selfdrive.swaglog import cloudlog
-
-
-def run_cmd(cmd):
-    return subprocess.check_output(cmd, encoding='utf8').strip()
-
-
-def run_cmd_default(cmd, default=None):
-  try:
-    return run_cmd(cmd)
-  except subprocess.CalledProcessError:
-    return default
 
 
 def get_git_commit(branch="HEAD", default=None):

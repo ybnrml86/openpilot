@@ -7,16 +7,16 @@ import subprocess
 
 from cereal import log
 from common.hardware_base import HardwareBase
+from common.shell import run_cmd
 
 NetworkType = log.ThermalData.NetworkType
 NetworkStrength = log.ThermalData.NetworkStrength
 
 
 def service_call(call):
-  ret = subprocess.check_output(["service", "call", *call], encoding='utf8').strip()
+  ret = run_cmd(["service", "call", *call])
   if 'Parcel' not in ret:
     return None
-
   return parse_service_call_bytes(ret)
 
 
@@ -55,7 +55,7 @@ def parse_service_call_bytes(ret):
 
 
 def getprop(key):
-  return subprocess.check_output(["getprop", key], encoding='utf8').strip()
+  return run_cmd(["getprop", key])
 
 
 class Android(HardwareBase):
@@ -248,7 +248,7 @@ class Android(HardwareBase):
     if network_type == NetworkType.none:
       return network_strength
     if network_type == NetworkType.wifi:
-      out = subprocess.check_output('dumpsys connectivity', shell=True).decode('utf-8')
+      out = run_cmd(['dumpsys', 'connectivity'], shell=True)
       network_strength = NetworkStrength.unknown
       for line in out.split('\n'):
         signal_str = "SignalStrength: "
@@ -267,7 +267,7 @@ class Android(HardwareBase):
       return network_strength
     else:
       # check cell strength
-      out = subprocess.check_output('dumpsys telephony.registry', shell=True).decode('utf-8')
+      out = run_cmd(['dumpsys', 'telephony.registry'], shell=True)
       for line in out.split('\n'):
         if "mSignalStrength" in line:
           arr = line.split(' ')
