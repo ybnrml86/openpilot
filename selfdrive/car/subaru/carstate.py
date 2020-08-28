@@ -47,6 +47,46 @@ class CarState(CarStateBase):
     ret.cruiseState.available = cp.vl["CruiseControl"]['Cruise_On'] != 0
     ret.cruiseState.speed = cp_cam.vl["ES_DashStatus"]['Cruise_Set_Speed'] * CV.KPH_TO_MS
 
+    # ACC speed units
+    # Global
+    #
+    # metric
+    # EDM 2018 Crosstrek (@mlp) metric      Dash_State Units = 3
+    # EDM 2018 Crosstrek (@mlp) metric      Dash_State Units = 5
+    # UDM 2019 Crosstrek metric             Dash_State Units = 4
+    #
+    # imperial
+    # EDM 2018 Crosstrek (@mlp) imperial    Dash_State Units = 1
+    # UDM 2019 Crosstrek (@Adam M) imperial Dash_State Units = 3
+    #
+    # Preglobal
+    #
+    # metric
+    # ADM 2015 Outback (@Bugsy) metric:     Dash_State Units = 0
+    # UDM 2016 Outback metric:              Dash_State Units = 0
+    # UDM 2017 Outback (@Anthony) metric:   Dash_State Units = 0
+    # UDM 2017 Legacy metric:               Dash_State Units = 1
+    #
+    # imperial
+    # ADM 2015 Outback (@Bugsy) imperial:   Dash_State Units = x
+    # UDM 2016 Outback imperial:            Dash_State Units = 1
+    # UDM 2017 Outback (@Anthony) imperial: Dash_State Units = 1
+    # UDM 2017 Forester (@Nougat) imperial: Dash_State Units = 0*
+    # UDM 2017 Legacy imperial:             Dash_State Units = 0
+    #
+    # * - Preglobal Foresters do not support units change
+
+    # TODO:
+    # - Implement OBD2 PID 28 query to get target market (UDM/ADM/EDM) for Global models
+    # - Add market and model based conditional checks
+    # - Analyze Eyesight OBD Mode22 scans to find better units bit
+
+    # EDM Global: mph = 1, 2; All Outback: mph = 1, UDM Forester: mph = 7
+    if self.car_fingerprint in [CAR.ASCENT, CAR.FORESTER, CAR.IMPREZA, CAR.OUTBACK_PREGLOBAL, CAR.OUTBACK_PREGLOBAL_2018]:
+      #force MPH Max Speed
+      #if cp.vl["Dash_State"]['Units'] in [1, 2, 7]:
+        ret.cruiseState.speed *= CV.MPH_TO_KPH
+
     # UDM Forester, Legacy: mph = 0
     if self.car_fingerprint in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL] and cp.vl["Dash_State"]['Units'] == 0:
       ret.cruiseState.speed *= CV.MPH_TO_KPH
