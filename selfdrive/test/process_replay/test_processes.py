@@ -6,10 +6,11 @@ from typing import Any, cast
 
 from selfdrive.car.car_helpers import interface_names
 from selfdrive.test.process_replay.compare_logs import compare_logs
-from selfdrive.test.process_replay.process_replay import CONFIGS, replay_process
+from selfdrive.test.process_replay.process_replay import (CONFIGS,
+                                                          replay_process)
 from tools.lib.logreader import LogReader
 from selfdrive.car.chrysler.values import CAR as CHRYSLER
-from selfdrive.car.gm.values import CAR as GM
+#from selfdrive.car.gm.values import CAR as GM
 #from selfdrive.car.ford.values import CAR as FORD
 from selfdrive.car.honda.values import CAR as HONDA
 from selfdrive.car.hyundai.values import CAR as HYUNDAI
