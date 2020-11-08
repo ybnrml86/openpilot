@@ -101,7 +101,7 @@ class TestStartup(unittest.TestCase):
       cp.carFw = car_fw
       params.put("CarParamsCache", cp.to_bytes())
 
-    time.sleep(2) # wait for controlsd to be ready
+    time.sleep(12) # wait for controlsd to be ready
 
     msg = messaging.new_message('pandaState')
     msg.pandaState.pandaType = log.PandaState.PandaType.uno
