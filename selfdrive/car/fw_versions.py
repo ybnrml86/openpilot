@@ -316,7 +316,6 @@ if __name__ == "__main__":
   from selfdrive.car.vin import get_vin
 
   parser = argparse.ArgumentParser(description='Get firmware version of ECUs')
-  parser.add_argument('--hex', action='store_true')
   parser.add_argument('--scan', action='store_true')
   parser.add_argument('--debug', action='store_true')
   args = parser.parse_args()
@@ -357,10 +356,7 @@ if __name__ == "__main__":
   print("{")
   for version in fw_vers:
     subaddr = None if version.subAddress == 0 else hex(version.subAddress)
-    if args.hex:
-      print(f"  (Ecu.{version.ecu}, {hex(version.address)}, {subaddr}): [b'%s']" % (''.join(r'\x{:02x}'.format(x) for x in version.fwVersion)))
-    else:
-      print(f"  (Ecu.{version.ecu}, {hex(version.address)}, {subaddr}): [{version.fwVersion}]")
+    print(f"  (Ecu.{version.ecu}, {hex(version.address)}, {subaddr}): [{version.fwVersion}]")
   print("}")
 
   print()
