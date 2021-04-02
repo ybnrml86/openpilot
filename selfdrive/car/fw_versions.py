@@ -11,6 +11,7 @@ from cereal import car
 from selfdrive.car.fingerprints import FW_VERSIONS, get_attr_from_cars
 from selfdrive.car.isotp_parallel_query import IsoTpParallelQuery
 from selfdrive.car.toyota.values import CAR as TOYOTA
+from selfdrive.car.subaru.values import SUBARU_WMI
 from selfdrive.swaglog import cloudlog
 
 Ecu = car.CarParams.Ecu
