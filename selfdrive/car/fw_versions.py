@@ -342,8 +342,9 @@ if __name__ == "__main__":
   print("Getting VIN took %.3f s" % (time.time() - t))
   print()
 
-  for subaru_vin in ('JF1', 'JF2', '4S3', '4S4'):
-    if vin.startswith(subaru_vin):
+  for wmi in SUBARU_WMI:
+    if vin.startswith(wmi):
+      cloudlog.warning("Subaru 10 second ECU init delay")
       time.sleep(10.)
       break
 
