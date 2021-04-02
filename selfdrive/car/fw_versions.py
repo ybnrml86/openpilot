@@ -334,7 +334,7 @@ if __name__ == "__main__":
       extra[(Ecu.unknown, 0x750, i)] = []
     extra = {"any": {"debug": extra}}
 
-  time.sleep(10.)
+  time.sleep(1.)
 
   t = time.time()
   print("Getting vin...")
@@ -342,6 +342,11 @@ if __name__ == "__main__":
   print(f"VIN: {vin}")
   print("Getting VIN took %.3f s" % (time.time() - t))
   print()
+
+  for subaru_vin in ('JF1', 'JF2', '4S3', '4S4'):
+    if vin.startswith(subaru_vin):
+      time.sleep(10.)
+      break
 
   t = time.time()
   fw_vers = get_fw_versions(logcan, sendcan, 1, extra=extra, debug=args.debug, progress=True)

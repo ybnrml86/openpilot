@@ -108,9 +108,13 @@ def fingerprint(logcan, sendcan):
     else:
       cloudlog.warning("Getting VIN & FW versions")
       _, vin = get_vin(logcan, sendcan, bus)
-      cloudlog.warning("Waiting 10 seconds")
+
       # Subaru needs 10sec delay before FW queries
-      time.sleep(10)
+      for subaru_vin in ('JF1', 'JF2', '4S3', '4S4'):
+        if vin.startswith(subaru_vin):
+          cloudlog.warning("Waiting 10 seconds")
+          time.sleep(10)
+          break
       car_fw = get_fw_versions(logcan, sendcan, bus)
 
     exact_fw_match, fw_candidates = match_fw_to_car(car_fw)
