@@ -2,23 +2,12 @@
 import argparse
 import os
 import sys
-from typing import Any, cast
+from typing import Any
 
 from selfdrive.car.car_helpers import interface_names
 from selfdrive.test.process_replay.compare_logs import compare_logs
-from selfdrive.test.process_replay.process_replay import (CONFIGS,
-                                                          replay_process)
+from selfdrive.test.process_replay.process_replay import CONFIGS, replay_process
 from tools.lib.logreader import LogReader
-from selfdrive.car.chrysler.values import CAR as CHRYSLER
-from selfdrive.car.gm.values import CAR as GM
-#from selfdrive.car.ford.values import CAR as FORD
-from selfdrive.car.honda.values import CAR as HONDA
-from selfdrive.car.hyundai.values import CAR as HYUNDAI
-from selfdrive.car.nissan.values import CAR as NISSAN
-#from selfdrive.car.mazda.values import CAR as MAZDA
-from selfdrive.car.subaru.values import CAR as SUBARU
-from selfdrive.car.toyota.values import CAR as TOYOTA
-from selfdrive.car.volkswagen.values import CAR as VOLKSWAGEN
 
 INJECT_MODEL = 0
 
@@ -152,20 +141,15 @@ if __name__ == "__main__":
 
   # check to make sure all car brands are tested
   if FULL_TEST:
-    tested_cars = set(keys["car_brand"].lower() for segment, keys in segments.items())
+    tested_cars = set(c.lower() for c, _ in segments)
     untested = (set(interface_names) - set(excluded_interfaces)) - tested_cars
     assert len(untested) == 0, "Cars missing routes: %s" % (str(untested))
 
   results: Any = {}
-  for segment, keys in segments.items():
-    if (cars_whitelisted and keys["car_brand"].upper() not in args.whitelist_cars) or \
-       (not cars_whitelisted and keys["car_brand"].upper() in args.blacklist_cars):
+  for car_brand, segment in segments:
+    if (cars_whitelisted and car_brand.upper() not in args.whitelist_cars) or \
+       (not cars_whitelisted and car_brand.upper() in args.blacklist_cars):
       continue
-
-    if keys.get('fingerprintSource', None) == 'fixed':
-      os.environ['FINGERPRINT'] = cast(str, keys["carFingerprint"])
-    else:
-      os.environ['FINGERPRINT'] = ""
 
     print("***** testing route segment %s *****\n" % segment)
 
