@@ -64,11 +64,11 @@ class CarController():
           self.sng_acc_resume = False
           self.sng_acc_resume_cnt = -1
 
-    self.prev_close_distance = CS.close_distance
+      # Only allow engagement with brake pressed when stopped behind another stopped car
+      if CS.out.brakePressed and CS.car_follow == 0 and CS.out.vEgo < 0.3:
+        pcm_cancel_cmd = True
 
-    # Only allow engagement with brake pressed when stopped behind another stopped car
-    if CS.out.brakePressed and CS.car_follow == 0 and CS.out.vEgo < 0.3:
-      pcm_cancel_cmd = True
+    self.prev_close_distance = CS.close_distance
 
     # *** alerts and pcm cancel ***
 
