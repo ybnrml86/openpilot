@@ -69,11 +69,17 @@ class CarState(CarStateBase):
       self.cruise_button = cp_cam.vl["ES_CruiseThrottle"]["Cruise_Button"]
       self.ready = not cp_cam.vl["ES_DashStatus"]["Not_Ready_Startup"]
       self.es_accel_msg = copy.copy(cp_cam.vl["ES_CruiseThrottle"])
+      # FIXME: find Car_Follow signal for FORESTER_PREGLOBAL
+      #self.car_follow = cp_cam.vl["ES_DashStatus"]['Car_Follow']
+      self.close_distance = cp_cam.vl["ES_CruiseThrottle"]['Close_Distance']
     else:
       ret.steerWarning = cp.vl["Steering_Torque"]["Steer_Warning"] == 1
       ret.cruiseState.nonAdaptive = cp_cam.vl["ES_DashStatus"]["Conventional_Cruise"] == 1
       self.es_distance_msg = copy.copy(cp_cam.vl["ES_Distance"])
       self.es_lkas_msg = copy.copy(cp_cam.vl["ES_LKAS_State"])
+      self.car_follow = cp_cam.vl["ES_Distance"]['Car_Follow']
+      self.close_distance = cp_cam.vl["ES_Distance"]['Close_Distance']
+      self.cruise_state = cp_cam.vl["ES_DashStatus"]['Cruise_State']
 
     return ret
 
@@ -88,7 +94,6 @@ class CarState(CarStateBase):
       ("Cruise_On", "CruiseControl", 0),
       ("Cruise_Activated", "CruiseControl", 0),
       ("Brake_Pedal", "Brake_Pedal", 0),
-      ("Throttle_Pedal", "Throttle", 0),
       ("LEFT_BLINKER", "Dashlights", 0),
       ("RIGHT_BLINKER", "Dashlights", 0),
       ("SEATBELT_FL", "Dashlights", 0),
@@ -164,6 +169,7 @@ class CarState(CarStateBase):
       signals = [
         ("Cruise_Set_Speed", "ES_DashStatus", 0),
         ("Not_Ready_Startup", "ES_DashStatus", 0),
+        #("Car_Follow", "ES_DashStatus", 0),
 
         ("Throttle_Cruise", "ES_CruiseThrottle", 0),
         ("Signal1", "ES_CruiseThrottle", 0),
@@ -192,6 +198,7 @@ class CarState(CarStateBase):
       signals = [
         ("Cruise_Set_Speed", "ES_DashStatus", 0),
         ("Conventional_Cruise", "ES_DashStatus", 0),
+        ("Cruise_State", "ES_DashStatus", 0),
 
         ("Counter", "ES_Distance", 0),
         ("Signal1", "ES_Distance", 0),

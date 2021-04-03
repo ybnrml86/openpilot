@@ -51,6 +51,14 @@ def create_es_lkas(packer, es_lkas_msg, visual_alert, left_line, right_line, lef
 
   return packer.make_can_msg("ES_LKAS_State", 0, values)
 
+def create_throttle(packer, throttle_msg, throttle_cmd):
+
+  values = copy.copy(throttle_msg)
+  if throttle_cmd:
+    values["Throttle_Pedal"] = 5
+
+  return packer.make_can_msg("Throttle", 2, values)
+
 # *** Subaru Pre-global ***
 
 def subaru_preglobal_checksum(packer, values, addr):
@@ -78,3 +86,13 @@ def create_es_throttle_control(packer, cruise_button, es_accel_msg):
   values["Checksum"] = subaru_preglobal_checksum(packer, values, "ES_CruiseThrottle")
 
   return packer.make_can_msg("ES_CruiseThrottle", 0, values)
+
+def create_preglobal_throttle(packer, throttle_msg, throttle_cmd):
+
+  values = copy.copy(throttle_msg)
+  if throttle_cmd:
+    values["Throttle_Pedal"] = 5
+
+  values["Checksum"] = subaru_preglobal_checksum(packer, values, "Throttle")
+
+  return packer.make_can_msg("Throttle", 2, values)
