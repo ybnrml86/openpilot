@@ -14,7 +14,7 @@ class CarController():
     self.brake_pedal_cnt = -1
     self.fake_button_prev = 0
     self.prev_close_distance = 0
-    self.prev_standstill = 0
+    self.prev_standstill = False
     self.standstill_start = 0
     self.steer_rate_limited = False
     self.sng_acc_resume = False
@@ -71,7 +71,7 @@ class CarController():
          self.sng_acc_resume = True
 
       # Detect NON-EPB
-      if (enabled and (CS.cruise_state != 3) and CS.out.standstill and frame > self.standstill_start + 100):
+      if (enabled and CS.cruise_state != 3 and CS.out.standstill and frame > self.standstill_start + 200):
         speed_cmd = True
 
       if CS.out.standstill and not self.prev_standstill:
