@@ -65,8 +65,8 @@ class CarController():
            and CS.close_distance > self.prev_close_distance): # distance with lead car is increasing
          self.sng_acc_resume = True
 
-      # Detect NON-EPB
-      if (enabled and CS.cruise_state != 3 and CS.out.standstill and frame > self.standstill_start + 100):
+      # Detect NON-EPB (check if ACC HOLD is set in 2 seconds after standstill)
+      if (enabled and CS.cruise_state != 3 and CS.out.standstill and frame > self.standstill_start + 200):
         speed_cmd = True
 
       if CS.out.standstill and not self.prev_standstill:
