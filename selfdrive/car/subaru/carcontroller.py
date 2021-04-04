@@ -66,12 +66,12 @@ class CarController():
          self.sng_acc_resume = True
 
       # Detect NON-EPB
-      if (enabled and CS.cruise_state != 3 and CS.out.standstill and frame > self.standstill_start + 200):
+      if (enabled and CS.cruise_state != 3 and CS.out.standstill and frame > self.standstill_start + 100):
         speed_cmd = True
 
       if CS.out.standstill and not self.prev_standstill:
         self.standstill_start = frame
-        self.prev_standstill = CS.out.standstill
+      self.prev_standstill = CS.out.standstill
 
     if self.sng_acc_resume:
       if self.sng_acc_resume_cnt < 5:
