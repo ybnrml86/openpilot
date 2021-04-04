@@ -55,7 +55,7 @@ class CarController():
            and CS.close_distance < 4.5                        # max operating distance to filter false positives
            and CS.close_distance > self.prev_close_distance   # distance with lead car is increasing
            and CS.out.standstill):                            # must be standing still
-         self.sng_resume_acc = True
+         self.sng_acc_resume = True
     elif CS.CP.carFingerprint not in PREGLOBAL_CARS:
       if (enabled                                             # ACC active
            and CS.car_follow == 1                             # lead car
