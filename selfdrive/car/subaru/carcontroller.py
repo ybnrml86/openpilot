@@ -1,6 +1,6 @@
 from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.subaru import subarucan
-from selfdrive.car.subaru.values import DBC, PREGLOBAL_CARS, CarControllerParams
+from selfdrive.car.subaru.values import DBC, CAR, PREGLOBAL_CARS, CarControllerParams
 from opendbc.can.packer import CANPacker
 
 
@@ -47,7 +47,15 @@ class CarController():
 
     throttle_cmd = False
 
-    if CS.CP.carFingerprint not in PREGLOBAL_CARS:
+    if CS.CP.carFingerprint in PREGLOBAL_CARS and CS.CP.carFingerprint != CAR.FORESTER_PREGLOBAL:
+      if (enabled                                             # ACC active
+           and CS.car_follow == 1                             # lead car
+           and CS.close_distance > 3                          # acc resume trigger threshold
+           and CS.close_distance < 4.5                        # max operating distance to filter false positives
+           and CS.close_distance > self.prev_close_distance   # distance with lead car is increasing
+           and CS.out.standstill):                            # must be standing still
+         self.sng_resume_acc = True
+    elif CS.CP.carFingerprint not in PREGLOBAL_CARS:
       if (enabled                                             # ACC active
            and CS.car_follow == 1                             # lead car
            and CS.cruise_state == 3                           # ACC HOLD
@@ -56,17 +64,17 @@ class CarController():
            and CS.close_distance > self.prev_close_distance): # distance with lead car is increasing
          self.sng_acc_resume = True
 
-      if self.sng_acc_resume:
-        if self.sng_acc_resume_cnt < 5:
-          throttle_cmd = True
-          self.sng_acc_resume_cnt += 1
-        else:
-          self.sng_acc_resume = False
-          self.sng_acc_resume_cnt = -1
+    if self.sng_acc_resume:
+      if self.sng_acc_resume_cnt < 5:
+        throttle_cmd = True
+        self.sng_acc_resume_cnt += 1
+      else:
+        self.sng_acc_resume = False
+        self.sng_acc_resume_cnt = -1
 
-      # Cancel ACC if stopped, brake pressed and not stopped behind another car
-      if enabled and CS.out.brakePressed and CS.car_follow == 0 and CS.out.vEgo < 0.3:
-        pcm_cancel_cmd = True
+    # Cancel ACC if stopped, brake pressed and not stopped behind another car
+    if enabled and CS.out.brakePressed and CS.car_follow == 0 and CS.out.standstill:
+      pcm_cancel_cmd = True
 
     self.prev_close_distance = CS.close_distance
 
