@@ -11,8 +11,10 @@ class CarController():
     self.es_accel_cnt = -1
     self.es_lkas_cnt = -1
     self.throttle_cnt = -1
+    self.brake_pedal_cnt = -1
     self.fake_button_prev = 0
     self.prev_close_distance = 0
+    self.prev_standstill = 0
     self.steer_rate_limited = False
     self.sng_acc_resume = False
     self.sng_acc_resume_cnt = -1
@@ -45,9 +47,10 @@ class CarController():
 
       self.apply_steer_last = apply_steer
 
-    # stop and go
+    # *** stop and go ***
 
     throttle_cmd = False
+    speed_cmd = False
 
     if CS.CP.carFingerprint in PREGLOBAL_CARS and CS.CP.carFingerprint != CAR.FORESTER_PREGLOBAL:
       if (enabled                                             # ACC active
@@ -65,6 +68,14 @@ class CarController():
            and CS.close_distance < 255                        # ignore max value
            and CS.close_distance > self.prev_close_distance): # distance with lead car is increasing
          self.sng_acc_resume = True
+
+      # Detect NON-EPB
+      if (enabled and (CS.cruise_state != 3) and CS.out.standstill and frame > self.standstill_start + 10):
+        speed_cmd = True
+
+      if CS.out.standstill and not self.prev_standstill:
+        self.standstill_start = frame
+        self.prev_standstill = CS.out.standstill
 
     if self.sng_acc_resume:
       if self.sng_acc_resume_cnt < 5:
@@ -118,5 +129,9 @@ class CarController():
       if self.throttle_cnt != CS.throttle_msg["Counter"]:
          can_sends.append(subarucan.create_throttle(self.packer, CS.throttle_msg, throttle_cmd))
          self.throttle_cnt = CS.throttle_msg["Counter"]
+
+      if self.brake_pedal_cnt != CS.brake_pedal_msg["Counter"]:
+         can_sends.append(subarucan.create_brake_pedal(self.packer, CS.brake_pedal_msg, speed_cmd))
+         self.brake_pedal_cnt = CS.brake_pedal_msg["Counter"]
 
     return can_sends

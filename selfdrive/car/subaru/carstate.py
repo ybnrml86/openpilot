@@ -77,6 +77,7 @@ class CarState(CarStateBase):
     else:
       ret.steerWarning = cp.vl["Steering_Torque"]['Steer_Warning'] == 1
       ret.cruiseState.nonAdaptive = cp_cam.vl["ES_DashStatus"]['Conventional_Cruise'] == 1
+      self.brake_pedal_msg = copy.copy(cp.vl["Brake_Pedal"])
       self.es_distance_msg = copy.copy(cp_cam.vl["ES_Distance"])
       self.es_lkas_msg = copy.copy(cp_cam.vl["ES_LKAS_State"])
       self.car_follow = cp_cam.vl["ES_Distance"]['Car_Follow']
@@ -140,6 +141,14 @@ class CarState(CarStateBase):
         ("Throttle_Body", "Throttle", 0),
         ("Off_Throttle_2", "Throttle", 0),
         ("Signal4", "Throttle", 0),
+
+        ("Counter", "Brake_Pedal", 0),
+        ("Signal1", "Brake_Pedal", 0),
+        ("Speed", "Brake_Pedal", 0),
+        ("Signal2", "Brake_Pedal", 0),
+        ("Brake_Lights", "Brake_Pedal", 0),
+        ("Signal3", "Brake_Pedal", 0),
+        ("Signal4", "Brake_Pedal", 0),
       ]
     else:
       signals += [
