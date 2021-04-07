@@ -68,7 +68,7 @@ class CarController():
             and CS.car_follow == 1                           # lead car
             and CS.cruise_state != 3                         # no ACC HOLD (for NON-EPB)
             and CS.out.standstill
-            and frame > self.standstill_start + 100):        # standstill for >1 second
+            and frame > self.standstill_start + 50):        # standstill for >0.5 second
           speed_cmd = True
 
       if CS.out.standstill and not self.prev_standstill:
