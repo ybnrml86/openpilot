@@ -91,8 +91,8 @@ TogglesPanel::TogglesPanel(QWidget *parent) : QWidget(parent) {
 
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("ManualParkingBrakeSNGToggle",
-                                           "Subaru experimental stop-and-go for manual parking brake models",
-                                           "Experimental feature which will keep Subaru ACC active while in standstill and enables stop and go",
+                                           "Enable Subaru NON-EPB stop-and-go",
+                                           "Experimental feature which keeps Subaru Global ACC active while in standstill and enables stop and go",
                                            "../assets/offroad/icon_road.png"));
 
 
