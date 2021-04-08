@@ -63,6 +63,13 @@ QWidget * toggles_panel() {
                                            "In this mode openpilot will ignore lanelines and just drive how it thinks a human would.",
                                            "../assets/offroad/icon_road.png"));
 
+  toggles_list->addWidget(horizontal_line());
+  toggles_list->addWidget(new ParamControl("ManualParkingBrakeSNGToggle",
+                                           "Subaru experimental stop-and-go for manual parking brake models",
+                                           "Experimental feature which will keep Subaru ACC active while in standstill and enables stop and go",
+                                           "../assets/offroad/icon_road.png"));
+
+
   bool record_lock = Params().getBool("RecordFrontLock");
   record_toggle->setEnabled(!record_lock);
 

@@ -5,6 +5,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.car.subaru.values import DBC, STEER_THRESHOLD, CAR, PREGLOBAL_CARS
+from common.params import Params
 
 
 class CarState(CarStateBase):
@@ -12,6 +13,9 @@ class CarState(CarStateBase):
     super().__init__(CP)
     can_define = CANDefine(DBC[CP.carFingerprint]['pt'])
     self.shifter_values = can_define.dv["Transmission"]['Gear']
+
+    params = Params()
+    self.has_epb = params.get("ManualParkingBrakeSNGToggle", encoding='utf8') == "0"
 
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
