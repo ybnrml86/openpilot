@@ -56,10 +56,10 @@ class CarState(CarStateBase):
     ret.cruiseState.speed = cp_cam.vl["ES_DashStatus"]['Cruise_Set_Speed'] * CV.KPH_TO_MS
 
     # UDM Forester, Legacy: mph = 0
-    if self.car_fingerprint in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL] and cp.vl["Dash_State"]['Units'] == 0:
+    if self.car_fingerprint in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL, CAR.WRX_PREGLOBAL] and cp.vl["Dash_State"]['Units'] == 0:
       ret.cruiseState.speed *= CV.MPH_TO_KPH
     # EDM Global: mph = 1, 2; All Outback: mph = 1, UDM Forester: mph = 7
-    elif self.car_fingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL] and cp.vl["Dash_State"]['Units'] in [1, 7]:
+    elif self.car_fingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL, CAR.WRX_PREGLOBAL] and cp.vl["Dash_State"]['Units'] in [1, 7]:
       ret.cruiseState.speed *= CV.MPH_TO_KPH
 
     ret.seatbeltUnlatched = cp.vl["Dashlights"]['SEATBELT_FL'] == 1
@@ -74,8 +74,8 @@ class CarState(CarStateBase):
       self.button = cp_cam.vl["ES_CruiseThrottle"]["Cruise_Button"]
       self.ready = not cp_cam.vl["ES_DashStatus"]["Not_Ready_Startup"]
       self.es_accel_msg = copy.copy(cp_cam.vl["ES_CruiseThrottle"])
-      # FIXME: find Car_Follow signal for FORESTER_PREGLOBAL
-      if self.car_fingerprint != CAR.FORESTER_PREGLOBAL:
+      # FIXME: find Car_Follow signal for FORESTER_PREGLOBAL and WRX_PREGLOBAL
+      if self.car_fingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.WRX_PREGLOBAL]:
         self.car_follow = cp_cam.vl["ES_DashStatus"]['Car_Follow']
       self.close_distance = cp_cam.vl["ES_CruiseThrottle"]['Close_Distance']
     else:
@@ -176,7 +176,7 @@ class CarState(CarStateBase):
         ("CruiseControl", 20),
       ]
 
-    if CP.carFingerprint == CAR.FORESTER_PREGLOBAL:
+    if CP.carFingerprint in [CAR.FORESTER_PREGLOBAL, CAR.WRX_PREGLOBAL]:
       checks += [
         ("Dashlights", 20),
         ("BodyInfo", 1),
@@ -217,7 +217,7 @@ class CarState(CarStateBase):
         ("Signal7", "ES_CruiseThrottle", 0),
       ]
 
-      if CP.carFingerprint != CAR.FORESTER_PREGLOBAL:
+      if CP.carFingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.WRX_PREGLOBAL]:
         signals += [
           ("Car_Follow", "ES_DashStatus", 0),
         ]
