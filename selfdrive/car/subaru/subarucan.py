@@ -65,7 +65,7 @@ def create_brake_pedal(packer, brake_pedal_msg, speed_cmd):
    if speed_cmd:
      values["Speed"] = 3
 
-   return packer.make_can_msg("Brake_Pedal", 2, values)  
+   return packer.make_can_msg("Brake_Pedal", 2, values)
 
 # *** Subaru Pre-global ***
 

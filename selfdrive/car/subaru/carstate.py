@@ -73,8 +73,8 @@ class CarState(CarStateBase):
       self.cruise_button = cp_cam.vl["ES_CruiseThrottle"]["Cruise_Button"]
       self.ready = not cp_cam.vl["ES_DashStatus"]["Not_Ready_Startup"]
       self.es_accel_msg = copy.copy(cp_cam.vl["ES_CruiseThrottle"])
-      # FIXME: find Car_Follow signal for FORESTER_PREGLOBAL
-      if self.car_fingerprint != CAR.FORESTER_PREGLOBAL:
+      # FIXME: find Car_Follow signal for FORESTER_PREGLOBAL and WRX_PREGLOBAL
+      if self.car_fingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.WRX_PREGLOBAL]:
         self.car_follow = cp_cam.vl["ES_DashStatus"]['Car_Follow']
       self.close_distance = cp_cam.vl["ES_CruiseThrottle"]['Close_Distance']
     else:
@@ -194,7 +194,7 @@ class CarState(CarStateBase):
         ("Signal7", "ES_CruiseThrottle", 0),
       ]
 
-      if CP.carFingerprint != CAR.FORESTER_PREGLOBAL:
+      if CP.carFingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.WRX_PREGLOBAL]:
         signals += [
           ("Car_Follow", "ES_DashStatus", 0),
         ]

@@ -48,7 +48,7 @@ class CarController():
     throttle_cmd = False
     speed_cmd = False
 
-    if CS.CP.carFingerprint in PREGLOBAL_CARS and CS.CP.carFingerprint != CAR.FORESTER_PREGLOBAL:
+    if CS.CP.carFingerprint in PREGLOBAL_CARS and CS.CP.carFingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.WRX_PREGLOBAL]:
       if (enabled                                            # ACC active
           and CS.car_follow == 1                             # lead car
           and CS.out.standstill                              # must be standing still
