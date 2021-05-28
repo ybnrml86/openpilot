@@ -26,7 +26,6 @@ class CarState(CarStateBase):
       ret.brakePressed = cp.vl["Brake_Pedal"]['Brake_Pedal'] > 2
     else:
       ret.brakePressed = cp.vl["Brake_Pedal"]['Brake_Pedal'] > 1e-5
-    ret.brakeLights = ret.brakePressed
 
     ret.wheelSpeeds.fl = cp.vl["Wheel_Speeds"]['FL'] * CV.KPH_TO_MS
     ret.wheelSpeeds.fr = cp.vl["Wheel_Speeds"]['FR'] * CV.KPH_TO_MS
@@ -41,8 +40,9 @@ class CarState(CarStateBase):
     ret.leftBlinker, ret.rightBlinker = self.update_blinker(50, cp.vl["Dashlights"]['LEFT_BLINKER'],
                                                             cp.vl["Dashlights"]['RIGHT_BLINKER'])
 
-    ret.leftBlindspot = (cp.vl["BSD_RCTA"]['L_ADJACENT'] == 1) or (cp.vl["BSD_RCTA"]['L_APPROACHING'] == 1)
-    ret.rightBlindspot = (cp.vl["BSD_RCTA"]['R_ADJACENT'] == 1) or (cp.vl["BSD_RCTA"]['R_APPROACHING'] == 1)
+    if self.CP.enableBsm:
+      ret.leftBlindspot = (cp.vl["BSD_RCTA"]['L_ADJACENT'] == 1) or (cp.vl["BSD_RCTA"]['L_APPROACHING'] == 1)
+      ret.rightBlindspot = (cp.vl["BSD_RCTA"]['R_ADJACENT'] == 1) or (cp.vl["BSD_RCTA"]['R_APPROACHING'] == 1)
 
     can_gear = int(cp.vl["Transmission"]['Gear'])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
@@ -71,7 +71,7 @@ class CarState(CarStateBase):
     self.throttle_msg = copy.copy(cp.vl["Throttle"])
 
     if self.car_fingerprint in PREGLOBAL_CARS:
-      self.button = cp_cam.vl["ES_CruiseThrottle"]["Cruise_Button"]
+      self.cruise_button = cp_cam.vl["ES_CruiseThrottle"]["Cruise_Button"]
       self.ready = not cp_cam.vl["ES_DashStatus"]["Not_Ready_Startup"]
       self.es_accel_msg = copy.copy(cp_cam.vl["ES_CruiseThrottle"])
       # FIXME: find Car_Follow signal for FORESTER_PREGLOBAL and WRX_PREGLOBAL
@@ -97,6 +97,7 @@ class CarState(CarStateBase):
       # sig_name, sig_address, default
       ("Steer_Torque_Sensor", "Steering_Torque", 0),
       ("Steering_Angle", "Steering_Torque", 0),
+      ("Steer_Error_1", "Steering_Torque", 0),
       ("Cruise_On", "CruiseControl", 0),
       ("Cruise_Activated", "CruiseControl", 0),
       ("Brake_Pedal", "Brake_Pedal", 0),
@@ -113,11 +114,6 @@ class CarState(CarStateBase):
       ("DOOR_OPEN_RL", "BodyInfo", 1),
       ("Units", "Dash_State", 1),
       ("Gear", "Transmission", 0),
-      ("L_ADJACENT", "BSD_RCTA", 0),
-      ("R_ADJACENT", "BSD_RCTA", 0),
-      ("L_APPROACHING", "BSD_RCTA", 0),
-      ("R_APPROACHING", "BSD_RCTA", 0),
-      ("Steer_Error_1", "Steering_Torque", 0),
     ]
 
     checks = [
@@ -128,7 +124,20 @@ class CarState(CarStateBase):
       ("Wheel_Speeds", 50),
       ("Transmission", 100),
       ("Steering_Torque", 50),
+      ("Dash_State", 1),
+      ("BodyInfo", 1),
     ]
+
+    if CP.enableBsm:
+      signals += [
+        ("L_ADJACENT", "BSD_RCTA", 0),
+        ("R_ADJACENT", "BSD_RCTA", 0),
+        ("L_APPROACHING", "BSD_RCTA", 0),
+        ("R_APPROACHING", "BSD_RCTA", 0),
+      ]
+      checks += [
+        ("BSD_RCTA", 17),
+      ]
 
     if CP.carFingerprint in PREGLOBAL_CARS:
       signals += [
@@ -146,6 +155,7 @@ class CarState(CarStateBase):
         ("Off_Throttle_2", "Throttle", 0),
         ("Signal4", "Throttle", 0),
       ]
+
     else:
       signals += [
         ("Counter", "Throttle", 0),
@@ -166,7 +176,6 @@ class CarState(CarStateBase):
         ("Signal3", "Brake_Pedal", 0),
         ("Signal4", "Brake_Pedal", 0),
 
-        ("Steer_Error_1", "Steering_Torque", 0),
         ("Steer_Warning", "Steering_Torque", 0),
       ]
 
