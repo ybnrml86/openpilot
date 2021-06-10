@@ -27,11 +27,7 @@ class CarState(CarStateBase):
     else:
       ret.brakePressed = cp.vl["Brake_Pedal"]['Brake_Pedal'] > 1e-5
 
-    ret.wheelSpeeds.fl = cp.vl["Wheel_Speeds"]['FL'] * CV.KPH_TO_MS
-    ret.wheelSpeeds.fr = cp.vl["Wheel_Speeds"]['FR'] * CV.KPH_TO_MS
-    ret.wheelSpeeds.rl = cp.vl["Wheel_Speeds"]['RL'] * CV.KPH_TO_MS
-    ret.wheelSpeeds.rr = cp.vl["Wheel_Speeds"]['RR'] * CV.KPH_TO_MS
-    ret.vEgoRaw = (ret.wheelSpeeds.fl + ret.wheelSpeeds.fr + ret.wheelSpeeds.rl + ret.wheelSpeeds.rr) / 4.
+    ret.vEgoRaw = cp.vl["Brake_Pedal"]['Speed'] * CV.KPH_TO_MS
     # Kalman filter, even though Subaru raw wheel speed is heaviliy filtered by default
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
     ret.standstill = ret.vEgoRaw < 0.01
@@ -55,12 +51,8 @@ class CarState(CarStateBase):
     ret.cruiseState.available = cp.vl["CruiseControl"]['Cruise_On'] != 0
     ret.cruiseState.speed = cp_cam.vl["ES_DashStatus"]['Cruise_Set_Speed'] * CV.KPH_TO_MS
 
-    # UDM Forester, Legacy: mph = 0
-    if self.car_fingerprint in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL, CAR.WRX_PREGLOBAL] and cp.vl["Dash_State"]['Units'] == 0:
-      ret.cruiseState.speed *= CV.MPH_TO_KPH
-    # EDM Global: mph = 1, 2; All Outback: mph = 1, UDM Forester: mph = 7
-    elif self.car_fingerprint not in [CAR.FORESTER_PREGLOBAL, CAR.LEGACY_PREGLOBAL, CAR.WRX_PREGLOBAL] and cp.vl["Dash_State"]['Units'] in [1, 7]:
-      ret.cruiseState.speed *= CV.MPH_TO_KPH
+    #Force MPH
+    ret.cruiseState.speed *= CV.MPH_TO_KPH
 
     ret.seatbeltUnlatched = cp.vl["Dashlights"]['SEATBELT_FL'] == 1
     ret.doorOpen = any([cp.vl["BodyInfo"]['DOOR_OPEN_RR'],
@@ -101,6 +93,7 @@ class CarState(CarStateBase):
       ("Cruise_On", "CruiseControl", 0),
       ("Cruise_Activated", "CruiseControl", 0),
       ("Brake_Pedal", "Brake_Pedal", 0),
+      ("Speed", "Brake_Pedal", 0),
       ("LEFT_BLINKER", "Dashlights", 0),
       ("RIGHT_BLINKER", "Dashlights", 0),
       ("SEATBELT_FL", "Dashlights", 0),
